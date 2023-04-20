@@ -26,7 +26,7 @@ from video_classes import IterPerSec
 from video_classes import putIterationsPerSec
 from video_classes import VideoGet
 from video_classes import VideoShow
-
+from video_classes import check_cameras
 
 #Modify the frame
 class thread_show:
@@ -76,13 +76,17 @@ class thread_show:
     
 
 def main():
-    source = [0,1]
-    #Call the class that manages the threads
-    thread_show(source).start()
-    #Display current threads
-    print("Current Threads:")
-    for t in threading.enumerate():
-        print('\tThread {}'.format( t.name)) 
+    source = check_cameras()
+    if len(source) >= 2:
+        source = [source[0], source[1]]
+        #Call the class that manages the threads
+        thread_show(source).start()
+        #Display current threads
+        print("Current Threads:")
+        for t in threading.enumerate():
+            print('\tThread {}'.format( t.name)) 
+    else:
+        raise Exception("You need two cameras to run this program, found = {}".format(len(source)))
 
 if __name__ == "__main__":
     main()

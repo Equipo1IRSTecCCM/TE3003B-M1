@@ -130,3 +130,37 @@ class VideoGet_2(VideoGet):
         self.frame = cv2.hconcat([self.frame1,self.frame2])
     def stop(self):
         self.stopped = True
+import cv2
+import os
+import numpy as np
+
+# font
+font = cv2.FONT_HERSHEY_SIMPLEX
+
+# org
+org = (00, 185)
+  
+# fontScale
+fontScale = 1
+   
+# Red color in BGR
+color = (0, 0, 255)
+  
+# Line thickness of 2 px
+thickness = 2
+###############################
+# Finds the cameras in the system. 
+def check_cameras(n_test = 10): # (Mod) Modified to a variable number of tests
+    cams_test = 0
+    cams = []
+    while cams_test < n_test:
+        cap = cv2.VideoCapture(cams_test)
+        test, _ = cap.read() # (Mod) Not assigning space for the frame
+        if test == True:
+            
+            cams.append(cams_test)
+        cap.release()
+        cams_test += 1
+    return cams
+
+
