@@ -25,8 +25,9 @@ from video_classes import putIterationsPerSec
 from video_classes import VideoGet
 
 # Modifies the frames
-def threadVideoGet(source=0):
-    video_getter = VideoGet(source).start()
+def VideoThread(source=0):
+    video_getter = cv2.VideoCapture(source)
+    (grabbed, frame) = video_getter.read()
     itps = IterPerSec().start()
     #Print current Threads
     print("Current Threads:")
@@ -34,12 +35,12 @@ def threadVideoGet(source=0):
         print('\tThread {}'.format( t.name)) 
 
     while True:
+        (grabbed, frame) = video_getter.read()
         #Stop when asked to
-        if (cv2.waitKey(1) == ord("q")) or video_getter.stopped:
-            video_getter.stop()
+        if (cv2.waitKey(1) == ord("q")) or not grabbed:
+            video_getter.release()
             break
         #Update frame
-        frame = video_getter.frame
         frame = putIterationsPerSec(frame, itps.itPerSec())
         cv2.imshow("Video", frame)
         itps.increment()
@@ -48,7 +49,7 @@ def threadVideoGet(source=0):
 
 def main():
     source = 0
-    threadVideoGet(source)
+    threading.Thread(target=VideoThread, args = (source,)).start()
 
 if __name__ == "__main__":
     main()
